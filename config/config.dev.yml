@@ -1,0 +1,13 @@
+http_server:
+  read_timeout: 10s
+  write_timeout: 10s
+  read_header_timeout: 10s
+  shutdown_timeout: 10s
+infrastructure:
+  mongo_db:
+    address:
+      "localhost:27017"
+    user_name: "play"
+    pass_word: "passw0rd"
+    enable: true
+    database_name: "play"
