@@ -48,8 +48,8 @@ func Init(cf *conf.Config) http.Handler {
 			endPoint: h.Hello,
 		},
 	}
-
 	ro := gin.New()
+
 	v1 := ro.Group("/v1")
 	for _, rou := range r {
 		v1.Handle(rou.method, rou.path, rou.endPoint)
