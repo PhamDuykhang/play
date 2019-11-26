@@ -6,11 +6,14 @@ import (
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/db"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/hello"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/usercrud"
 )
 
 var (
 	//HlSrv Hello service
 	HlSrv hello.Service
+	//EmployeeSvr service
+	EmployeeSvr usercrud.EmployeeManager
 )
 
 var (
@@ -31,4 +34,6 @@ func newLogicPool(conf *conf.Config) {
 	r := hello.NewRicher(c.MongoDBClient)
 	HlSrv = hello.NewHelloService(r)
 
+	crud := usercrud.NewCrudMongo(c.MongoDBClient)
+	EmployeeSvr = usercrud.NewService(crud)
 }
