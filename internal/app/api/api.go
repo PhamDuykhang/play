@@ -5,10 +5,10 @@ import (
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/api/handler"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
-	"github.com/PhamDuyKhang/userplayboar/internal/app/middleware"
-
 	"github.com/PhamDuyKhang/userplayboar/internal/app/logicpool"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/middleware"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
+
 	"github.com/teera123/gin"
 )
 
@@ -85,6 +85,7 @@ func Init(cf *conf.Config) http.Handler {
 	ro := gin.New()
 	// ro.Use(middleware.AcceptLang)
 	ro.Use(middleware.Logging)
+	ro.Use(middleware.CORSMiddleware)
 	v1 := ro.Group("/v1")
 	for _, rou := range r {
 		v1.Handle(rou.method, rou.path, rou.endPoint)
