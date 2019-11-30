@@ -5,8 +5,8 @@ import (
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var logger = glog.New().WithPrefix("hello")
@@ -26,18 +26,23 @@ func NewCrudMongo(c *mongo.Client) *MongoDB {
 }
 
 //InsertUser add new user into database
-func (r *MongoDB) InsertUser(ctx context.Context, e Employee) (empID string, err error) {
+func (r *MongoDB) InsertUser(ctx context.Context, e Employee) (emp Employee, err error) {
 	logger.Debugc(ctx, "inserting employee")
-	rs, err := r.Cl.Database("play").Collection("employee").InsertOne(context.Background(), e)
+
+	_, err = r.Cl.Database("play").Collection("employee").InsertOne(context.Background(), e)
 	if err != nil {
 		logger.Errorc(ctx, "can't insert employee")
 		return
 	}
-	return rs.InsertedID.(primitive.ObjectID).String(), err
+	err = r.Cl.Database("play").Collection("employee").FindOne(ctx, bson.M{"emp_id": e.EmpID}).Decode(&emp)
+	if err != nil {
+		return emp, err
+	}
+	return emp, nil
 }
 
 //UpdateUser add new user into database
-func (r *MongoDB) UpdateUser(ctx context.Context, e Employee) (empID string, err error) {
+func (r *MongoDB) UpdateUser(ctx context.Context, e Employee) (emp Employee, err error) {
 	logger.Debugc(ctx, "updating employee")
 	filter := bson.M{
 		"emp_id": e.EmpID,
@@ -46,12 +51,19 @@ func (r *MongoDB) UpdateUser(ctx context.Context, e Employee) (empID string, err
 	update := bson.M{
 		"$set": e,
 	}
-	_, err = r.Cl.Database("play").Collection("employee").UpdateOne(context.Background(), filter, update, nil)
+	ops := options.FindOneAndUpdateOptions{}
+	ops.SetReturnDocument(options.After)
+	upResult := r.Cl.Database("play").Collection("employee").FindOneAndUpdate(context.Background(), filter, update, &ops)
 	if err != nil {
 		logger.Errorc(ctx, "can't update user", err)
-		return "", err
+		return emp, err
 	}
-	return empID, nil
+	err = upResult.Decode(&emp)
+	if err != nil {
+		return emp, err
+	}
+	return emp, nil
+
 }
 
 //DeleteUser user form database
@@ -67,11 +79,11 @@ func (r *MongoDB) DeleteUser(ctx context.Context, emID string) (err error) {
 
 //Find user from database
 func (r *MongoDB) Find(ctx context.Context, emID string) (emp Employee, err error) {
-	logger.Debugc(ctx, "deleting employee")
+	logger.Debugc(ctx, "finding employee")
 	rs := r.Cl.Database("play").Collection("employee").FindOne(ctx, bson.M{"emp_id": emID})
 	var e Employee
 	if rs.Err() != nil {
-		logger.Errorc(ctx, "can't find employee", rs.Err())
+		logger.Errorc(ctx, "can't find employee %s", rs.Err().Error())
 		return e, rs.Err()
 	}
 	err = rs.Decode(&e)
@@ -80,4 +92,18 @@ func (r *MongoDB) Find(ctx context.Context, emID string) (emp Employee, err erro
 		return e, err
 	}
 	return e, nil
+}
+
+//FindAll get all document still not suport sorting and pagination
+func (r *MongoDB) FindAll(ctx context.Context) (emps []Employee, err error) {
+	rs, err := r.Cl.Database("play").Collection("employee").Find(ctx, bson.M{}, nil)
+	if err != nil {
+		return emps, err
+	}
+	logger.Infoc(ctx, "finding employee")
+	err = rs.All(ctx, &emps)
+	if err != nil {
+		return emps, err
+	}
+	return emps, nil
 }

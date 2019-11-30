@@ -1,9 +1,13 @@
 package db
 
 import (
+	"context"
+
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type (
@@ -21,9 +25,20 @@ func EstablishInfrastructure(cf *conf.Config) (*ServiceConnection, error) {
 		if err != nil {
 			return nil, err
 		}
+		ensureIndexes(c, cf)
 		return &ServiceConnection{
 			MongoDBClient: c,
 		}, nil
 	}
 	return nil, nil
+}
+func ensureIndexes(c *mongo.Client, cf *conf.Config) {
+	index := mongo.IndexModel{
+		Keys:    bson.M{"emp_id": 1},
+		Options: options.Index().SetUnique(true),
+	}
+	c.Database(cf.Infrastructure.MongoDB.DatabaseName).
+		Collection("employee").
+		Indexes().
+		CreateOne(context.Background(), index)
 }

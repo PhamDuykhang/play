@@ -10,7 +10,7 @@ import (
 func Logging(c *gin.Context) {
 	t := time.Now()
 	// Set example variable
-	c.Set("request_ud", c.Request.Header.Get("request_id"))
+	c.Set("request_id", c.Request.Header.Get("request_id"))
 	logger.Infof("start request URL %s from %s", c.Request.RequestURI, c.ClientIP())
 	// before request
 	c.Next()

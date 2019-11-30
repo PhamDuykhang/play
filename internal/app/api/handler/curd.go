@@ -64,18 +64,19 @@ func (h CRUDHandler) AddNewEmployee(c *gin.Context) {
 		EmpBirthDate:  r.EmpBirthDate,
 		Address:       r.Address,
 		PhoneNum:      r.PhoneNum,
+		TechSkill:     r.TechSkill,
 	}
-	emID, err := h.svr.AddNewEmployee(c, emp)
+	emData, err := h.svr.AddNewEmployee(c, emp)
 	if err != nil {
 		rs.StatusCode = http.StatusInternalServerError
 		rs.Message = err.Error()
-		c.JSON(http.StatusBadRequest, rs)
+		c.JSON(http.StatusInternalServerError, rs)
 		return
 	}
 	rs.StatusCode = http.StatusOK
 	rs.Message = "your request is successfully"
-	rs.Data = emID
-	c.JSON(http.StatusBadRequest, rs)
+	rs.Data = emData
+	c.JSON(http.StatusOK, rs)
 	return
 }
 
@@ -103,37 +104,55 @@ func (h CRUDHandler) UpdateEmployee(c *gin.Context) {
 	if err != nil {
 		rs.StatusCode = http.StatusInternalServerError
 		rs.Message = err.Error()
-		c.JSON(http.StatusBadRequest, rs)
+		c.JSON(http.StatusInternalServerError, rs)
 		return
 	}
 	rs.StatusCode = http.StatusOK
 	rs.Message = "your request is successfully"
 	rs.Data = emID
-	c.JSON(http.StatusBadRequest, rs)
+	c.JSON(http.StatusOK, rs)
 	return
 }
 
 //FindEmployee update  employee infomation in database form request
 func (h CRUDHandler) FindEmployee(c *gin.Context) {
-	var r usercrud.DeleteAndFindEmployeeRequest
-	err := c.BindJSON(&r)
+
+	id := c.Param("id")
 	var rs Response
-	if err != nil {
+	if id == "" {
 		rs.StatusCode = http.StatusBadRequest
 		rs.Message = "can't decode your request"
 		c.JSON(http.StatusBadRequest, rs)
 		return
 	}
-	employee, err := h.svr.FindEmployee(c, r.EmpID)
+
+	employee, err := h.svr.FindEmployee(c, id)
 	if err != nil {
 		rs.StatusCode = http.StatusInternalServerError
 		rs.Message = err.Error()
-		c.JSON(http.StatusBadRequest, rs)
+		c.JSON(http.StatusInternalServerError, rs)
 		return
 	}
 	rs.StatusCode = http.StatusOK
 	rs.Message = "your request is successfully"
 	rs.Data = employee
-	c.JSON(http.StatusBadRequest, rs)
+	c.JSON(http.StatusOK, rs)
+	return
+}
+
+//GetAllEmployee get all employee in database
+func (h CRUDHandler) GetAllEmployee(c *gin.Context) {
+	var rs Response
+	employee, err := h.svr.GetAllEmployee(c)
+	if err != nil {
+		rs.StatusCode = http.StatusInternalServerError
+		rs.Message = err.Error()
+		c.JSON(http.StatusInternalServerError, rs)
+		return
+	}
+	rs.StatusCode = http.StatusOK
+	rs.Message = "your request is successfully"
+	rs.Data = employee
+	c.JSON(http.StatusOK, rs)
 	return
 }

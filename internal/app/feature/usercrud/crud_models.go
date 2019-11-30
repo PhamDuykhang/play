@@ -10,6 +10,7 @@ type (
 		EmpDepartment string     `json:"emp_department,omitempty" bson:"emp_department,omitempty"`
 		EmpRoom       string     `json:"emp_room,omitempty" bson:"emp_room,omitempty"`
 		EmpBirthDate  *time.Time `json:"emp_birth_date,omitempty" bson:"emp_birth_date,omitempty"`
+		TechSkill     []string   `json:"tech_skill,omitempty" bson:"tech_skill,omitempty"`
 		Address       Address    `json:"address,omitempty" json:"address,omitempty"`
 		PhoneNum      string     `json:"phone_num,omitempty" bson:"phone_num,omitempty"`
 	}
@@ -29,9 +30,10 @@ type (
 		EmpBirthDate  *time.Time `json:"emp_birth_date,omitempty" bson:"emp_birth_date,omitempty"`
 		Address       Address    `json:"address,omitempty" json:"address,omitempty"`
 		PhoneNum      string     `json:"phone_num,omitempty" bson:"phone_num,omitempty"`
+		TechSkill     []string   `json:"tech_skill,omitempty" bson:"tech_skill,omitempty"`
 	}
 	//DeleteAndFindEmployeeRequest hold information to find and delete employee by id
 	DeleteAndFindEmployeeRequest struct {
-		EmpID string `json:"emp_id,omitempty" bson:"emp_id,omitempty"`
+		EmpID string `json:"emp_id,omitempty" bson:"emp_id,omitempty" uri:"id"`
 	}
 )

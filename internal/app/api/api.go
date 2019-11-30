@@ -53,9 +53,15 @@ func Init(cf *conf.Config) http.Handler {
 		},
 		{
 			desc:     "get employee",
-			path:     "/employee",
+			path:     "/employee/:id",
 			method:   get,
 			endPoint: crud.FindEmployee,
+		},
+		{
+			desc:     "get employee",
+			path:     "/employee",
+			method:   get,
+			endPoint: crud.GetAllEmployee,
 		},
 		{
 			desc:     "create new employee",
