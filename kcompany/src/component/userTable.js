@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import { Table, Divider, Tag} from 'antd';
-
+import getEmployee from '../sagas'
+import { connect } from 'react-redux';
 
 class UserTable extends Component{
     constructor(){
@@ -10,7 +11,11 @@ class UserTable extends Component{
       }
       
     }
-    
+    componentDidMount(){
+      console.log("get data")
+      getEmployee()
+      console.log("get data done")
+    }
     render(){
       const columns = [
         {
@@ -63,41 +68,16 @@ class UserTable extends Component{
           ),
         },
       ];
-      
-      const data = [
-        {
-          key: '1',
-          empID:"K1122",
-          name: 'John Brown',
-          age: 32,
-          dep:"DC-12",
-          address: 'New York No. 1 Lake Park',
-          skill: ['nice', 'developer'],
-        },
-        {
-          key: '2',
-          empID:"K1122",
-          name: 'Jim Green',
-          age: 42,
-          dep:"DC-12",
-          address: 'London No. 1 Lake Park',
-          skill: ['loser'],
-        },
-        {
-          key: '3',
-          empID:"K1122",
-          dep:"DC-12",
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park',
-          skill: ['cool', 'teacher'],
-        },
-      ];
         return (
           <div>
-              <Table dataSource={data} columns={columns} pagination={false}/>
+              <Table dataSource={this.props.data} columns={columns} pagination={false}/>
           </div>
         );
     }
 }
-export default UserTable
+function mapStateToProps(state) {
+  return {
+    data : state.employee
+  };
+}
+export default connect(mapStateToProps)(UserTable);
