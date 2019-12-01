@@ -1,15 +1,34 @@
+import { FETCH_EMPLOYEE_BEGIN, FETCH_EMPLOYEE_SUCCESS, FETCH_EMPLOYEE_FAILURE } from "../action/employee";
 
 const initialState = {
-    employee: []
+        data:[],
+        isLoading :false,
+        error:null,
+     
   };
 export default function EmployeeReducer(state= initialState,action ){
+
     switch (action.type){
-        case "ADD":
+        case FETCH_EMPLOYEE_BEGIN:
             return {
-                employee: [...state.employee, action.data]
+                ...state,
+                isLoading:true,
+                error:null
             }
-        case "SHOW":
-            console.log(state)
+        case FETCH_EMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                data:action.payload,
+                isLoading:false
+            }
+        case FETCH_EMPLOYEE_FAILURE:
+            console.log(action.payload)
+            return {
+                ...state,
+                isLoading:false,
+                error :action.payload.error            }
+        default:
+            return state
     }
   
 }

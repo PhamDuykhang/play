@@ -1,37 +1,29 @@
 import React,{Component} from 'react'
 import { Table, Divider, Tag} from 'antd';
-import getEmployee from '../sagas'
+import {fetchEnployee} from '../action/employee'
 import { connect } from 'react-redux';
 
 class UserTable extends Component{
-    constructor(){
-      super()
-      this.state = {
-        isShowModel:false
-      }
-      
-    }
+    
     componentDidMount(){
-      console.log("get data")
-      getEmployee()
-      console.log("get data done")
+     this.props.fetch()
     }
     render(){
       const columns = [
         {
           title: 'Employee ID',
-          dataIndex: 'empID',
+          dataIndex: 'emp_id',
           key: 'id',
           render: text => <a>{text}</a>,
         },
         {
           title: 'Employee Name',
-          dataIndex: 'name',
+          dataIndex: 'emp_name',
           key: 'name',
         },
         {
           title: 'Department',
-          dataIndex: 'dep',
+          dataIndex: 'emp_department',
           key: 'dep',
         },
         {
@@ -41,11 +33,11 @@ class UserTable extends Component{
         },
         {
           title: 'Tech Skill',
-          key: 'skill',
-          dataIndex: 'skill',
-          render: skill => (
+          key: 'tech_skill',
+          dataIndex: 'tech_skill',
+          render: tech_skill => (
             <span>
-              {skill.map(tag => {
+              {tech_skill && tech_skill.map(tag => {
                 let color = tag.length > 5 ? 'geekblue' : 'green';
                 return (
                   <Tag color={color} key={tag}>
@@ -68,16 +60,25 @@ class UserTable extends Component{
           ),
         },
       ];
+      console.log(this.props.data)
         return (
           <div>
-              <Table dataSource={this.props.data} columns={columns} pagination={false}/>
+            <Table owKey={record => record.emp_id}   dataSource={this.props.data.employees} loading={this.props.isLoading} columns={columns}  pagination={false}/>
           </div>
         );
     }
 }
 function mapStateToProps(state) {
+  console.log(state.employee ? state.employees : null)
+  console.log(state )
   return {
-    data : state.employee
+    data : state.employee.data ? state.employee.data : [],
+    isLoading : state.employee.isLoading
   };
 }
-export default connect(mapStateToProps)(UserTable);
+const mapDispatchToProps = dispatch => {
+  return {
+    fetch : () => dispatch(fetchEnployee())
+  };
+}
+export default connect(mapStateToProps,mapDispatchToProps)(UserTable);
