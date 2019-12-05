@@ -12,6 +12,7 @@ export default function EmployeeReducer(state= initialState,action ){
         case FETCH_EMPLOYEE_BEGIN:
             return {
                 ...state,
+                data : [],
                 isLoading:true,
                 error:null
             }
@@ -22,7 +23,6 @@ export default function EmployeeReducer(state= initialState,action ){
                 isLoading:false
             }
         case FETCH_EMPLOYEE_FAILURE:
-            console.log(action.payload)
             return {
                 ...state,
                 isLoading:false,

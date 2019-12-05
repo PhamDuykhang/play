@@ -1,15 +1,18 @@
 import React from 'react';
 import { Layout, Menu, Breadcrumb,Icon } from 'antd';
-import KICON from './asert/k.png'
-import UserTable from './component/userTable'
-import './App.css';
+import KICON from './asert/logo.png'
 import 'antd/dist/antd.css';
+import './App.css';
+import {Router, Link} from 'react-router-dom'
+import KRouter from './router';
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
+
 function App() {
   return (
+ 
     <Layout>
-    <Header className="header">
+    <Header className="header_main">
     <img className="header_logo" src={KICON} alt="ds"></img>
       <Menu
         theme="dark"
@@ -25,7 +28,7 @@ function App() {
     <Content style={{ padding: '0 50px' }}>
       <Breadcrumb style={{ margin: '16px 0' }}>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>List</Breadcrumb.Item>
+        <Breadcrumb.Item>Nav</Breadcrumb.Item>
         <Breadcrumb.Item>App</Breadcrumb.Item>
       </Breadcrumb>
       <Layout style={{ padding: '24px 0', background: '#fff' }}>
@@ -45,12 +48,10 @@ function App() {
                 </span>
               }
             >
-              <Menu.Item key="1">option1</Menu.Item>
-              <Menu.Item key="2">option2</Menu.Item>
-              <Menu.Item key="3">option3</Menu.Item>
-              <Menu.Item key="4">option4</Menu.Item>
+              <Menu.Item key="1"><Link to='/'>Home</Link></Menu.Item>
+              <Menu.Item key="2"><Link to='/update'>Update</Link></Menu.Item>
             </SubMenu>
-            <SubMenu
+            {/* <SubMenu
               key="sub2"
               title={
                 <span>
@@ -77,15 +78,15 @@ function App() {
               <Menu.Item key="10">option10</Menu.Item>
               <Menu.Item key="11">option11</Menu.Item>
               <Menu.Item key="12">option12</Menu.Item>
-            </SubMenu>
+            </SubMenu> */}
           </Menu>
         </Sider>
         <Content style={{ padding: '0 24px', minHeight: 280 }}>
-          <UserTable/>
-          </Content>
+          <KRouter/>
+        </Content>
       </Layout>
     </Content>
-    <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+    <Footer style={{ textAlign: 'center' }}>KCompany ©2018 Created by CTO Khang Pham</Footer>
   </Layout>
   );
 }
