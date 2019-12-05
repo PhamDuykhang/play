@@ -6,15 +6,22 @@ import (
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/db"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/hello"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/usercrud"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
 )
 
 var (
 	//HlSrv Hello service
 	HlSrv hello.Service
+	//EmployeeSvr service
+	EmployeeSvr usercrud.EmployeeManager
 )
 
 var (
 	o = sync.Once{}
+)
+var (
+	logger = glog.New().WithPrefix("logic pool")
 )
 
 //NewLogicPool create all service logic once service is stared
@@ -31,4 +38,6 @@ func newLogicPool(conf *conf.Config) {
 	r := hello.NewRicher(c.MongoDBClient)
 	HlSrv = hello.NewHelloService(r)
 
+	crud := usercrud.NewCrudMongo(c.MongoDBClient)
+	EmployeeSvr = usercrud.NewService(crud)
 }
