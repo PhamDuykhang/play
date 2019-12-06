@@ -11,6 +11,7 @@ import (
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/api"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/errors"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
 )
 
@@ -28,10 +29,15 @@ func main() {
 	cf, err := conf.LoadConfig(state, confPath)
 	if err != nil {
 		log.WithField("err", err).Errorf("can't load config file")
-		os.Exit(1)
+		panic(err)
 	}
-	r := api.Init(cf)
-
+	e, err := errors.Init(state, confPath)
+	r := api.Init(e, cf)
+	if err != nil {
+		log.WithField("err", err).Errorf("can't load error message")
+		panic(err)
+	}
+	log.Info(e.ExternalError.Authentication.ExpireSession)
 	srv := &http.Server{
 		Addr:              fmt.Sprint(":", *port),
 		Handler:           r,

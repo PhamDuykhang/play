@@ -1,0 +1,14 @@
+external_error:
+  authentication:
+    expire_session:
+      code: 1001
+      message: "Your session is expire please login again"
+    permission_denied:
+      code: 1002
+      message: "Your role is not accepted this action"
+
+internal_error:
+  database_error:
+    connection:
+      code: 2001
+      message: "Can not connect to database now"

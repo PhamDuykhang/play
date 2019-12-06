@@ -5,6 +5,7 @@ import (
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/api/handler"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/errors"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/logicpool"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/middleware"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
@@ -33,11 +34,11 @@ type (
 	}
 )
 
-//Init init  gin router instand for RESTfull service
-func Init(cf *conf.Config) http.Handler {
-	logicpool.NewLogicPool(cf)
-	h := handler.NewHello(logicpool.HlSrv)
+//Init init  gin router instance for RESTfull service
+func Init(e *errors.AppErrors, cf *conf.Config) http.Handler {
+	logicpool.NewLogicPool(e, cf)
 	crud := handler.NewCRUD(logicpool.EmployeeSvr)
+	h := handler.NewHello(e, logicpool.HlSrv)
 	r := []Router{
 		{
 			desc:     "ping/pong service",
