@@ -5,6 +5,7 @@ import (
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/conf"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/db"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/errors"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/hello"
 )
 
@@ -18,12 +19,12 @@ var (
 )
 
 //NewLogicPool create all service logic once service is stared
-func NewLogicPool(conf *conf.Config) {
+func NewLogicPool(em *errors.AppErrors, conf *conf.Config) {
 	o.Do(func() {
-		newLogicPool(conf)
+		newLogicPool(em, conf)
 	})
 }
-func newLogicPool(conf *conf.Config) {
+func newLogicPool(em *errors.AppErrors, conf *conf.Config) {
 	c, err := db.EstablishInfrastructure(conf)
 	if err != nil {
 		panic(err)
