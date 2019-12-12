@@ -6,9 +6,10 @@ package gin
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"reflect"
+
+	"github.com/gin-gonic/gin/json"
 )
 
 type ErrorType uint64
