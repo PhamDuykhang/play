@@ -84,7 +84,7 @@ func Init(e *errors.AppErrors, cf *conf.Config) http.Handler {
 		},
 	}
 	ro := gin.New()
-	// ro.Use(middleware.AcceptLang)
+	ro.Use(middleware.AcceptLang)
 	ro.Use(middleware.Logging)
 	ro.Use(middleware.CORSMiddleware)
 	v1 := ro.Group("/v1")

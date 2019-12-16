@@ -1,14 +1,21 @@
-external_error:
-  authentication:
-    expire_session:
-      code: 1001
-      message: "Your session is expire please login again"
-    permission_denied:
-      code: 1002
-      message: "Your role is not accepted this action"
-
-internal_error:
-  database_error:
-    connection:
-      code: 2001
-      message: "Can not connect to database now"
+success:
+  code: 0000
+  message: "Your request is handled successfully"
+common:
+  code: 1000
+  message: "The service can't process your request now"
+authentication:
+  expire_session:
+    code: 1001
+    message: "Your session is expire please login again"
+  permission_denied:
+    code: 1002
+    message: "Your role is not accepted this action"
+request:
+  request_invalid:
+    code: 2001
+    message: "Your request is not with spec of service"   
+database_error:
+  connection:
+    code: 2001
+    message: "Can not connect to database now"

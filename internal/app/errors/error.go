@@ -15,17 +15,11 @@ type (
 	}
 	//AppErrors the struct hold all error message and error information in this service, for return to a other servic and web UI
 	AppErrors struct {
-		ExternalError OpenAPI      `mapstructure:"external_error"`
-		InternalError InternalCall `mapstructure:"internal_error"`
-	}
-	//OpenAPI to return common code and error message to a external service outside our infrastructure
-	OpenAPI struct {
+		Success        ErrorUnit           `mapstructure:"success"`
+		Common         ErrorUnit           `mapstructure:"common"`
 		Authentication AuthenticationError `mapstructure:"authentication"`
 		Request        RequestError        `mapstructure:"request"`
-	}
-	//InternalCall is a struct to hold respons message to internal service when those service call eachother help our developer to know what happen when service is called
-	InternalCall struct {
-		DatabaseError DataBaseError `mapstructure:"database_error"`
+		DatabaseError  DataBaseError       `mapstructure:"database_error"`
 	}
 	//AuthenticationError to tell with a orther service what happen with authentication issuse e.g invalid user....
 	AuthenticationError struct {
@@ -66,14 +60,4 @@ func Init(state, confDir *string) (*AppErrors, error) {
 		return &e, err
 	}
 	return &e, nil
-}
-
-//I return internal call error data directly
-func (a *AppErrors) I() *InternalCall {
-	return &a.InternalError
-}
-
-//E return external call error data directly
-func (a *AppErrors) E() *OpenAPI {
-	return &a.ExternalError
 }
