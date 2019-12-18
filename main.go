@@ -37,7 +37,7 @@ func main() {
 		log.WithField("err", err).Errorf("can't load error message")
 		panic(err)
 	}
-	log.Info(e.ExternalError.Authentication.ExpireSession)
+
 	srv := &http.Server{
 		Addr:              fmt.Sprint(":", *port),
 		Handler:           r,

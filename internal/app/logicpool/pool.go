@@ -7,6 +7,7 @@ import (
 	"github.com/PhamDuyKhang/userplayboar/internal/app/db"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/errors"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/hello"
+	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/organization"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/feature/usercrud"
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
 )
@@ -16,6 +17,8 @@ var (
 	HlSrv hello.Service
 	//EmployeeSvr service
 	EmployeeSvr usercrud.EmployeeManager
+	//Depart is a public service to handle business of department action
+	Depart organization.ServiceI
 )
 
 var (
@@ -41,4 +44,7 @@ func newLogicPool(em *errors.AppErrors, conf *conf.Config) {
 
 	crud := usercrud.NewCrudMongo(c.MongoDBClient)
 	EmployeeSvr = usercrud.NewService(crud)
+
+	or := organization.NewOrganizationMongo(c.MongoDBClient)
+	Depart = organization.NewService(em, or)
 }

@@ -9,7 +9,7 @@ type (
 		UpdateUser(ctx context.Context, e Employee) (emp Employee, err error)
 		DeleteUser(ctx context.Context, emID string) (err error)
 		Find(ctx context.Context, emID string) (emp Employee, err error)
-		FindAll(ctx context.Context) (emps []Employee, err error)
+		FindAll(ctx context.Context) ([]Employee, error)
 	}
 	//EmployeeManager to expose to handler
 	EmployeeManager interface {
@@ -54,5 +54,6 @@ func (s *Service) FindEmployee(ctx context.Context, emID string) (emp Employee, 
 
 //GetAllEmployee get all employee in database
 func (s *Service) GetAllEmployee(ctx context.Context) (emps []Employee, err error) {
-	return s.repo.FindAll(ctx)
+	emps, err = s.repo.FindAll(ctx)
+	return
 }

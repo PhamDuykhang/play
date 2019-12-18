@@ -41,4 +41,20 @@ func ensureIndexes(c *mongo.Client, cf *conf.Config) {
 		Collection("employee").
 		Indexes().
 		CreateOne(context.Background(), index)
+	indexDepartment := mongo.IndexModel{
+		Keys:    bson.M{"id": 1},
+		Options: options.Index().SetUnique(true),
+	}
+	c.Database(cf.Infrastructure.MongoDB.DatabaseName).
+		Collection("departments").
+		Indexes().
+		CreateOne(context.Background(), indexDepartment)
+	indexSkill := mongo.IndexModel{
+		Keys:    bson.M{"skill_id": 1},
+		Options: options.Index().SetUnique(true),
+	}
+	c.Database(cf.Infrastructure.MongoDB.DatabaseName).
+		Collection("skills").
+		Indexes().
+		CreateOne(context.Background(), indexSkill)
 }

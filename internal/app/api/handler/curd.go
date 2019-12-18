@@ -145,6 +145,7 @@ func (h CRUDHandler) GetAllEmployee(c *gin.Context) {
 	var rs Response
 	employee, err := h.svr.GetAllEmployee(c)
 	if err != nil {
+		logger.Errorc(c, "get employee data error: %v", err)
 		rs.StatusCode = http.StatusInternalServerError
 		rs.Message = err.Error()
 		c.JSON(http.StatusInternalServerError, rs)

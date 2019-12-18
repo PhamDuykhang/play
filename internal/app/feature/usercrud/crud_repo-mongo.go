@@ -2,6 +2,7 @@ package usercrud
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/PhamDuyKhang/userplayboar/internal/app/pkg/glog"
 	"go.mongodb.org/mongo-driver/bson"
@@ -95,15 +96,36 @@ func (r *MongoDB) Find(ctx context.Context, emID string) (emp Employee, err erro
 }
 
 //FindAll get all document still not suport sorting and pagination
-func (r *MongoDB) FindAll(ctx context.Context) (emps []Employee, err error) {
-	rs, err := r.Cl.Database("play").Collection("employee").Find(ctx, bson.M{}, nil)
+func (r *MongoDB) FindAll(ctx context.Context) ([]Employee, error) {
+	var ems []Employee
+	rs, err := r.Cl.Database("play").Collection("employee").Find(ctx, bson.M{})
 	if err != nil {
-		return emps, err
+		return nil, err
 	}
 	logger.Infoc(ctx, "finding employee")
-	err = rs.All(ctx, &emps)
-	if err != nil {
-		return emps, err
+	if rs.Err() != nil {
+		return nil, err
 	}
-	return emps, nil
+	for rs.Next(ctx) {
+		var e Employee
+		err := rs.Decode(&e)
+		if err != nil {
+			logger.Debugc(ctx, "decode element fail")
+			continue
+		}
+
+		if isEmployeeNil(e) {
+			logger.Debug("next")
+			continue
+		}
+		logger.Debug("don't do that")
+		ems = append(ems, e)
+	}
+	logger.Debugc(ctx, "len of data %d", len(ems))
+	return ems, nil
+}
+func isEmployeeNil(e Employee) bool {
+	logger.Debug("value of e:", e)
+	logger.Debug(reflect.DeepEqual(e, Employee{}))
+	return reflect.DeepEqual(e, Employee{})
 }

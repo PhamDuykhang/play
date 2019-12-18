@@ -21,6 +21,11 @@ type (
 		District string `json:"district,omitempty" bson:"district,omitempty"`
 		Country  string `json:"country,omitempty" bson:"country,omitempty"`
 	}
+	//TechSkill hold technical skill information of employee
+	TechSkill struct {
+		SkillID    string `json:"skill_id,omitempty"`
+		SkillValue string `json:"skill_value,omitempty"`
+	}
 	//EmployeeRequest hold information for add new employee
 	EmployeeRequest struct {
 		EmpID         string     `json:"emp_id,omitempty" bson:"emp_id,omitempty"`

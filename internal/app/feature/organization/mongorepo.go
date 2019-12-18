@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/palantir/stacktrace"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
@@ -13,10 +15,10 @@ const (
 	DeliveryCenterCollections = "deliverycenter"
 	//DeliveryGroupCollections is name of dg colletions
 	DeliveryGroupCollections = "deliverygroup"
-	//ProjectCollections is name of prj colletions
-	ProjectCollections = "project"
+	//SkillCollections is name of skill colletions
+	SkillCollections = "skills"
 	//DepartmentCollections the collection name where we store department data
-	DepartmentCollections = "department"
+	DepartmentCollections = "departments"
 )
 
 type (
@@ -61,14 +63,14 @@ func (r *MongoDB) FindChildrentByParentID(ctx context.Context, pID string) ([]Or
 	var ors []Organization
 	rs, err := r.Cl.Database("play").Collection(DepartmentCollections).Find(ctx, bson.M{"parent_id": pID})
 	if err != nil {
-		logger.Errorc(ctx, "Get department base on parent id error")
+		logger.Errorc(ctx, "Get child department base on parent id error")
 		err := stacktrace.Propagate(err, "can't get department")
 		return ors, err
 	}
 	err = rs.All(ctx, &ors)
 	if err != nil {
 		logger.Errorc(ctx, "can't decode result err:%v", err)
-		err := stacktrace.Propagate(err, "can't get department")
+		err := stacktrace.Propagate(err, "can't get child department")
 		return ors, err
 	}
 	return ors, nil
@@ -99,11 +101,14 @@ func (r *MongoDB) UpdateDepartment(ctx context.Context, d Organization) (Organiz
 	}
 	d.ID = ""
 	update := bson.M{
-		"$set":              d,
-		"returnNewDocument": true,
+		"$set": d,
+	}
+	after := options.After
+	opt := &options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
 	}
 	var or Organization
-	sr := r.Cl.Database("play").Collection(DepartmentCollections).FindOneAndUpdate(ctx, filter, update)
+	sr := r.Cl.Database("play").Collection(DepartmentCollections).FindOneAndUpdate(ctx, filter, update, opt)
 	if sr.Err() != nil {
 		return or, stacktrace.Propagate(sr.Err(), "can't get update department")
 	}
@@ -114,4 +119,37 @@ func (r *MongoDB) UpdateDepartment(ctx context.Context, d Organization) (Organiz
 		return or, err
 	}
 	return or, nil
+}
+
+//InsertSkill add new skill to mongo database
+func (r *MongoDB) InsertSkill(ctx context.Context, sk Skill) (Skill, error) {
+	var skill Skill
+	_, err := r.Cl.Database("play").Collection(SkillCollections).InsertOne(ctx, sk)
+	if err != nil {
+		err := errors.Wrap(err, " can't insert data to data base")
+		return skill, err
+	}
+	rs := r.Cl.Database("play").Collection(SkillCollections).FindOne(ctx, bson.M{"skill_id": sk.SkillID})
+	if rs.Err() != nil {
+		return skill, errors.Wrap(err, " can't get new data from data base")
+	}
+	err = rs.Decode(&skill)
+	if err != nil {
+		return skill, errors.Wrap(err, " can't decode new data from data base")
+	}
+	return skill, nil
+}
+
+//FindAllSkill find all skill we have in mongo database
+func (r *MongoDB) FindAllSkill(ctx context.Context) ([]Skill, error) {
+	rs, err := r.Cl.Database("play").Collection(SkillCollections).Find(ctx, bson.M{})
+	if err != nil {
+		return nil, errors.Wrap(err, " can't get data from data base")
+	}
+	var skills []Skill
+	err = rs.All(ctx, &skills)
+	if err != nil {
+		return nil, errors.Wrap(err, " can't decode new data from data base")
+	}
+	return skills, nil
 }

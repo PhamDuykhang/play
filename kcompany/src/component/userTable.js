@@ -29,7 +29,18 @@ class UserTable extends Component {
       {
         title: "Address",
         dataIndex: "address",
-        key: "address"
+        key: "address",
+        render: addr => (
+          <span>
+            {addr.home_no +
+              ", " +
+              addr.street +
+              ", " +
+              addr.district +
+              ", " +
+              addr.country}
+          </span>
+        )
       },
       {
         title: "Tech Skill",

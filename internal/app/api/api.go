@@ -39,6 +39,8 @@ func Init(e *errors.AppErrors, cf *conf.Config) http.Handler {
 	logicpool.NewLogicPool(e, cf)
 	crud := handler.NewCRUD(logicpool.EmployeeSvr)
 	h := handler.NewHello(e, logicpool.HlSrv)
+
+	department := handler.NewOrganizationHandler(e, logicpool.Depart)
 	r := []Router{
 		{
 			desc:     "ping/pong service",
@@ -81,6 +83,42 @@ func Init(e *errors.AppErrors, cf *conf.Config) http.Handler {
 			path:     "/employee",
 			method:   delete,
 			endPoint: crud.DeleteEmployee,
+		},
+		{
+			desc:     "get a department",
+			path:     "/department/:deparid",
+			method:   get,
+			endPoint: department.GetDepartment,
+		},
+		{
+			desc:     "add new department",
+			path:     "/department",
+			method:   post,
+			endPoint: department.CreateDepartment,
+		},
+		{
+			desc:     "get a tree of childrent of department",
+			path:     "/department/:deparid/tree",
+			method:   get,
+			endPoint: department.GetDepartmentTree,
+		},
+		{
+			desc:     "update department",
+			path:     "/department",
+			method:   put,
+			endPoint: department.UpdateDepartment,
+		},
+		{
+			desc:     "insert skill",
+			path:     "/skill",
+			method:   post,
+			endPoint: department.AddSkill,
+		},
+		{
+			desc:     "get list skills",
+			path:     "/skill",
+			method:   get,
+			endPoint: department.ListSkill,
 		},
 	}
 	ro := gin.New()

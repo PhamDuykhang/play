@@ -1,7 +1,5 @@
 package organization
 
-import "github.com/PhamDuyKhang/userplayboar/internal/app/errors"
-
 const (
 	//DeliveryCenter represents for a delivery center unit in company
 	DeliveryCenter = "DeliveryCenter"
@@ -19,19 +17,17 @@ type (
 		Type      string         `json:"-" bson:"type,omitempty"`
 		MetaData  interface{}    `json:"-" bson:"meta_data,omitempty"`
 		ParentID  string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
-		Childrent []Organization `json:"childrent,omitempty" bson:"-"`
+		Children []Organization `json:"children,omitempty" bson:"-"`
 	}
 	/*Response struct from service layer*/
 
 	//RecursiveLookupRes to wrap data from database and remove necessary fields
 	RecursiveLookupRes struct {
-		errors.ErrorUnit
-		Object interface{} `json:"childrent,omitempty" bson:"-"`
+		Object interface{} `json:"tree,omitempty" bson:"-"`
 	}
 
 	//DepartmentRes to wrap department data from database and remove necessary
 	DepartmentRes struct {
-		errors.ErrorUnit
 		ID       string      `json:"id,omitempty" `
 		Name     string      `json:"name,omitempty" `
 		Type     string      `json:"type,omitempty"`
@@ -46,6 +42,22 @@ type (
 		Type      string         `json:"-" bson:"type,omitempty"`
 		MetaData  interface{}    `json:"-" bson:"meta_data,omitempty"`
 		ParentID  string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
-		Childrent []Organization `json:"childrent,omitempty" bson:"-"`
+		Children []Organization `json:"children,omitempty" bson:"-"`
+	}
+	//Skill presents a technical skill in system
+	Skill struct {
+		SkillID    string `json:"skill_id,omitempty" bson:"skill_id"`
+		SkillValue string `json:"skill_value,omitempty" bson:"skill_value"`
+	}
+	//SkillRs presents information that we want to response to user or order service
+	SkillRs struct {
+		SkillID    string `json:"skill_id,omitempty"`
+		SkillValue string `json:"skill_value,omitempty"`
+	}
+
+	//SkillRQ present request structure when insert or update skill information
+	SkillRQ struct {
+		SkillID    string `json:"skill_id,omitempty"`
+		SkillValue string `json:"skill_value,omitempty"`
 	}
 )
