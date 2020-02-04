@@ -14,7 +14,7 @@ class UserTable extends Component {
         title: "Employee ID",
         dataIndex: "emp_id",
         key: "id",
-        render: text => <Link to={"/update/" + text}>{text}</Link>
+        render: emp_id => <Link to={"/update/" + emp_id}>{emp_id}</Link>
       },
       {
         title: "Employee Name",

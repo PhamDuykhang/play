@@ -56,14 +56,15 @@ func (h CRUDHandler) AddNewEmployee(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, rs)
 		return
 	}
+
 	emp := usercrud.Employee{
 		EmpID:         r.EmpID,
 		EmpName:       r.EmpName,
-		EmpDepartment: r.EmpDepartment,
+		EmpDepartment: r.EmpDepartment[len(r.EmpDepartment)-1],
 		EmpRoom:       r.EmpRoom,
 		EmpBirthDate:  r.EmpBirthDate,
-		Address:       r.Address,
 		PhoneNum:      r.PhoneNum,
+		FullAddress:   r.FullAddress,
 		TechSkill:     r.TechSkill,
 	}
 	emData, err := h.svr.AddNewEmployee(c, emp)
@@ -86,6 +87,10 @@ func (h CRUDHandler) UpdateEmployee(c *gin.Context) {
 	err := c.BindJSON(&r)
 	var rs Response
 	if err != nil {
+		logger.Errorc(c, "can't decode request %v", err)
+		var rqDump []byte
+		_, _ = c.Request.Body.Read(rqDump)
+		logger.Debugc(c, "the request is %v ", string(rqDump))
 		rs.StatusCode = http.StatusBadRequest
 		rs.Message = "can't decode your request"
 		c.JSON(http.StatusBadRequest, rs)
@@ -94,10 +99,9 @@ func (h CRUDHandler) UpdateEmployee(c *gin.Context) {
 	emp := usercrud.Employee{
 		EmpID:         r.EmpID,
 		EmpName:       r.EmpName,
-		EmpDepartment: r.EmpDepartment,
+		EmpDepartment: r.EmpDepartment[len(r.EmpDepartment)-1],
 		EmpRoom:       r.EmpRoom,
 		EmpBirthDate:  r.EmpBirthDate,
-		Address:       r.Address,
 		PhoneNum:      r.PhoneNum,
 	}
 	emID, err := h.svr.UpdateEmployee(c, emp)

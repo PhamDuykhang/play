@@ -81,7 +81,7 @@ func (r *MongoDB) FindDepartmentByID(ctx context.Context, id string) (Organizati
 	var ors Organization
 	rs := r.Cl.Database("play").Collection(DepartmentCollections).FindOne(ctx, bson.M{"id": id})
 	if rs.Err() != nil {
-		logger.Errorc(ctx, "Get department base id error %v", rs.Err())
+		logger.Errorc(ctx, "Get department base id: %s error %v", id, rs.Err())
 		err := stacktrace.Propagate(rs.Err(), "can't get department")
 		return ors, err
 	}

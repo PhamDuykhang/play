@@ -9,7 +9,7 @@ import (
 	pkgerr "github.com/pkg/errors"
 )
 
-var logger = glog.New().WithPrefix("hello")
+var logger = glog.New().WithPrefix("organization")
 
 type (
 	//RepoI hold necessary func t use in servie

@@ -7,7 +7,8 @@ import {
   Select,
   Button,
   Tag,
-  Divider
+  Divider,
+  message
 } from "antd";
 import { useParams } from "react-router-dom";
 import "./employeeFrom.css";
@@ -27,11 +28,16 @@ class EmployeeFrom extends Component {
       },
       department: [],
       //will be got from API
-      systemSkill:[]
-    
+      systemSkill: [],
+      isLoading: false
     };
   }
-
+  UpdateSuccess = () => {
+    message.success("Update employee is successfully", 1);
+  };
+  UpdateFailure = () => {
+    message.error("Update employee is fail", 1);
+  };
   componentDidMount() {
     console.log("did mount ");
     let { id } = this.props.match.params;
@@ -49,17 +55,37 @@ class EmployeeFrom extends Component {
             this.setState({
               department: d
             });
-          }).then(
-            fetch("http://localhost:8081/v1/skill").then(rs =>rs.json()).then(rs =>this.setState({systemSkill:rs.data}))
-          ).then(console.log(this.state.systemSkill))
+          })
+          .then(
+            fetch("http://localhost:8081/v1/skill")
+              .then(rs => rs.json())
+              .then(rs => this.setState({ systemSkill: rs.data }))
+          )
+          .then(console.log(this.state.systemSkill))
       );
   }
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);
+        fetch("http://localhost:8081/v1/employee", {
+          method: "put",
+          headers: {
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(values)
+        }).then(res => res.json())
+        .then(json => {
+          if (json.status_code ===200){
+              this.UpdateSuccess()
+          }else{
+            throw new Error("can't update employee")
+          }
+        }).catch (e =>{
+          console.log(e)
+          this.UpdateFailure()
+        })
       }
     });
   };
@@ -123,29 +149,21 @@ class EmployeeFrom extends Component {
         </Tag>
       </Option>
     ));
-    const prefixSelector = getFieldDecorator("prefix", {
-      initialValue: "84"
-    })(
-      <Select disabled={this.state.isLocked} mod="tags" style={{ width: 120 }}>
-        <Option value="84">(+84)Việt Nam</Option>
-        <Option value="66">(+66)Thái Lan</Option>
-      </Select>
-    );
     return (
       <Form {...formItemLayout} onSubmit={this.handleSubmit}>
         <Form.Item label="Employee ID">
-          {getFieldDecorator("employeeID", {
+          {getFieldDecorator("emp_id", {
             initialValue: this.state.employee.emp_id
           })(<Input disabled={true} />)}
         </Form.Item>
         <Form.Item label="Employee Name" hasFeedback>
-          {getFieldDecorator("employeeName", {
+          {getFieldDecorator("emp_name", {
             initialValue: this.state.employee.emp_name
           })(<Input disabled={this.state.isLocked} />)}
         </Form.Item>
         <Form.Item label="Technical Skill">
-          {getFieldDecorator("skill", {
-            initialValue: ["java", "ivy"]
+          {getFieldDecorator("tech_skill", {
+            initialValue: this.state.employee.tech_skill
           })(
             <Select
               mode="multiple"
@@ -158,8 +176,8 @@ class EmployeeFrom extends Component {
           )}
         </Form.Item>
         <Form.Item label="Department">
-          {getFieldDecorator("department", {
-            initialValue: ["dg1", "dc14", "kbtgkplus"]
+          {getFieldDecorator("emp_department", {
+            initialValue: this.state.employee.emp_department
           })(
             <Cascader
               disabled={this.state.isLocked}
@@ -174,21 +192,14 @@ class EmployeeFrom extends Component {
           )}
         </Form.Item>
         <Form.Item label="Phone Number">
-          {getFieldDecorator("phone", {
-            rules: [
-              { required: true, message: "Please input your phone number!" }
-            ],
-            initialValue: this.state.employee.phone
+          {getFieldDecorator("phone_num", {
+            initialValue: this.state.employee.phone_num
           })(
-            <Input
-              disabled={this.state.isLocked}
-              addonBefore={prefixSelector}
-              style={{ width: "100%" }}
-            />
+            <Input disabled={this.state.isLocked} style={{ width: "100%" }} />
           )}
         </Form.Item>
         <Form.Item label="Employee Address">
-          {getFieldDecorator("addr", {
+          {getFieldDecorator("address", {
             initialValue: this.state.employee.address
               ? this.state.employee.address.home_no +
                 ", " +

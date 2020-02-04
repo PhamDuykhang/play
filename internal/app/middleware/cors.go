@@ -2,6 +2,7 @@ package middleware
 
 import "github.com/teera123/gin"
 
+//CORSMiddleware is a mechanism for allow CORS domain beatween FE and BE
 func CORSMiddleware(c *gin.Context) {
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")

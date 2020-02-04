@@ -42,9 +42,9 @@ func newLogicPool(em *errors.AppErrors, conf *conf.Config) {
 	r := hello.NewRicher(c.MongoDBClient)
 	HlSrv = hello.NewHelloService(r)
 
-	crud := usercrud.NewCrudMongo(c.MongoDBClient)
-	EmployeeSvr = usercrud.NewService(crud)
-
 	or := organization.NewOrganizationMongo(c.MongoDBClient)
 	Depart = organization.NewService(em, or)
+
+	crud := usercrud.NewCrudMongo(c.MongoDBClient)
+	EmployeeSvr = usercrud.NewService(crud, or)
 }
