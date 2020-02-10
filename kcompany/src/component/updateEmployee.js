@@ -47,10 +47,11 @@ class EmployeeFrom extends Component {
         this.setState({ employee: resData.data });
       })
       .then(
-        fetch("http://localhost:8081/v1/department/dd/tree")
+        fetch("http://localhost:8081/v1/department/delivery/tree")
           .then(res => res.json())
           .then(res => {
             var d = this.state.department;
+            console.log("department tree",res.data)
             d.push(res.data.tree);
             this.setState({
               department: d

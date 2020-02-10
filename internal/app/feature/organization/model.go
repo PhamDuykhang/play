@@ -12,11 +12,11 @@ const (
 type (
 	//Organization is a struct represents for department hierarchy in company
 	Organization struct {
-		ID        string         `json:"id,omitempty" bson:"id,omitempty"`
-		Name      string         `json:"name,omitempty" bson:"name,omitempty"`
-		Type      string         `json:"-" bson:"type,omitempty"`
-		MetaData  interface{}    `json:"-" bson:"meta_data,omitempty"`
-		ParentID  string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
+		ID       string         `json:"id,omitempty" bson:"id,omitempty"`
+		Name     string         `json:"name,omitempty" bson:"name,omitempty"`
+		Type     string         `json:"-" bson:"type,omitempty"`
+		MetaData interface{}    `json:"-" bson:"meta_data,omitempty"`
+		ParentID string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
 		Children []Organization `json:"children,omitempty" bson:"-"`
 	}
 	/*Response struct from service layer*/
@@ -37,11 +37,11 @@ type (
 
 	//DepartmentRQ the struct hold request information for update and add new department
 	DepartmentRQ struct {
-		ID        string         `json:"id,omitempty" bson:"id,omitempty"`
-		Name      string         `json:"name,omitempty" bson:"name,omitempty"`
-		Type      string         `json:"-" bson:"type,omitempty"`
-		MetaData  interface{}    `json:"-" bson:"meta_data,omitempty"`
-		ParentID  string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
+		ID       string         `json:"id,omitempty" bson:"id,omitempty"`
+		Name     string         `json:"name,omitempty" bson:"name,omitempty"`
+		Type     string         `json:"-" bson:"type,omitempty"`
+		MetaData interface{}    `json:"-" bson:"meta_data,omitempty"`
+		ParentID string         `json:"parent_id,omitempty" bson:"parent_id,omitempty"`
 		Children []Organization `json:"children,omitempty" bson:"-"`
 	}
 	//Skill presents a technical skill in system

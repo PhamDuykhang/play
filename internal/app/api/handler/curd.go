@@ -11,6 +11,7 @@ type (
 	//CRUDHandler handle all employee incoming request
 	CRUDHandler struct {
 		svr usercrud.EmployeeManager
+
 	}
 )
 
@@ -81,7 +82,7 @@ func (h CRUDHandler) AddNewEmployee(c *gin.Context) {
 	return
 }
 
-//UpdateEmployee update  employee infomation in database form request
+//UpdateEmployee update  employee information in database form request
 func (h CRUDHandler) UpdateEmployee(c *gin.Context) {
 	var r usercrud.EmployeeRequest
 	err := c.BindJSON(&r)
@@ -118,7 +119,7 @@ func (h CRUDHandler) UpdateEmployee(c *gin.Context) {
 	return
 }
 
-//FindEmployee update  employee infomation in database form request
+//FindEmployee update  employee information in database form request
 func (h CRUDHandler) FindEmployee(c *gin.Context) {
 
 	id := c.Param("id")

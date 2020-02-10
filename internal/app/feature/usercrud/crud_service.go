@@ -24,7 +24,7 @@ type (
 		FindEmployee(ctx context.Context, emID string) (EmployeeRes, error)
 		GetAllEmployee(ctx context.Context) ([]EmployeeRes, error)
 	}
-	//Service make logice for api
+	//Service make logic for api
 	Service struct {
 		repo   UserManager
 		orRepo organization.RepoI
@@ -63,7 +63,8 @@ func (s *Service) FindEmployee(ctx context.Context, emID string) (EmployeeRes, e
 	var listDepartment []string
 	err = s.departmentLookup(e.EmpDepartment, &listDepartment)
 	if err != nil {
-		errors.Wrap(err, "can't make  employee department path")
+		logger.Error("err:",err)
+		return EmployeeRes{}, errors.Wrap(err, "can't make  employee department path")
 	}
 	logger.Infoc(ctx, "the department path %v", listDepartment)
 	stack := make([]string, len(listDepartment))
@@ -76,7 +77,7 @@ func (s *Service) FindEmployee(ctx context.Context, emID string) (EmployeeRes, e
 		EmpName:       e.EmpName,
 		EmpBirthDate:  e.EmpBirthDate,
 		TechSkill:     e.TechSkill,
-		FullAddress:   e.Address.HomeNo + "/" + e.Address.Street + "/" + e.Address.District + "/",
+		FullAddress:   e.FullAddress,
 		PhoneNum:      e.PhoneNum,
 		EmpDepartment: stack,
 	}, nil
@@ -92,15 +93,23 @@ func (s *Service) GetAllEmployee(ctx context.Context) ([]EmployeeRes, error) {
 	empRes := make([]EmployeeRes, len(employees))
 
 	for i := range employees {
+
+		or,err := s.orRepo.FindDepartmentByID(ctx,employees[i].EmpDepartment)
+		if err != nil{
+			logger.Warnc(ctx,"can't get department name")
+			or.Name = employees[i].EmpDepartment
+		}
 		empRes[i] = EmployeeRes{
 			EmpID:        employees[i].EmpID,
 			EmpName:      employees[i].EmpName,
 			EmpBirthDate: employees[i].EmpBirthDate,
 			TechSkill:    employees[i].TechSkill,
-			FullAddress:  employees[i].Address.HomeNo + "/" + employees[i].Address.Street + "/" + employees[i].Address.District + "/",
+			FullAddress:  employees[i].FullAddress,
 			PhoneNum:     employees[i].PhoneNum,
+			EmpDepartment: []string{or.Name},
 		}
 	}
+
 	return empRes, nil
 
 }
