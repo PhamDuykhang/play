@@ -25,7 +25,6 @@ func main() {
 	confPath := flag.String("conf", "config", "where you put your config file")
 
 	flag.Parse()
-
 	cf, err := conf.LoadConfig(state, confPath)
 	if err != nil {
 		log.WithField("err", err).Errorf("can't load config file")
@@ -37,7 +36,6 @@ func main() {
 		log.WithField("err", err).Errorf("can't load error message")
 		panic(err)
 	}
-
 	srv := &http.Server{
 		Addr:              fmt.Sprint(":", *port),
 		Handler:           r,
